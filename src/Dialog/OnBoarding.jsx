@@ -2,8 +2,8 @@ import OnboardingFeed from '../components/onboarding-feed-01'
 
 const OnboardingFeedPage = () => {
   return (
-    <div className='py-8 sm:py-16 lg:py-24'>
-      <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
+    <div className="flex min-h-screen items-center justify-center px-4 py-8">
+      <div className="w-full max-w-7xl sm:px-6 lg:px-8">
         <div className='flex justify-center'>
           <OnboardingFeed />
         </div>

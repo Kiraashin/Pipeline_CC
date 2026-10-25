@@ -43,7 +43,7 @@ const ProfileDropdown = ({
             <HugeiconsIcon icon={User02Icon} strokeWidth={2} className='text-foreground size-5' />
             <span>My account</span>
           </DropdownMenuItem>
-          <DropdownMenuItem className='gap-2 px-4 py-2.5 text-base'>
+          <DropdownMenuItem className='gap-2 px-4 py-2.5 text-base' onClick={() => {window.location.href = "/usersetting";}}>
             <HugeiconsIcon icon={SettingsIcon} strokeWidth={2} className='text-foreground size-5' />
             <span>Settings</span>
           </DropdownMenuItem>

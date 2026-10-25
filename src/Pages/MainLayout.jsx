@@ -31,25 +31,30 @@ import FacebookIcon from '@/assets/svg/facebook-icon'
 import InstagramIcon from '@/assets/svg/instagram-icon'
 import LinkedinIcon from '@/assets/svg/linkedin-icon'
 import TwitterIcon from '@/assets/svg/twitter-icon'
-import { ChartNoAxesCombinedIcon, ChartSplineIcon, UsersIcon, ChartPieIcon, HashIcon, ArrowRightLeftIcon, Clock9Icon, ClipboardListIcon, CrownIcon, SquareActivityIcon, CalendarClockIcon, Undo2Icon, SettingsIcon, LanguagesIcon } from 'lucide-react'
+import { LanguagesIcon } from 'lucide-react'
+import { HugeiconsIcon } from '@hugeicons/react';
+import { MenuSquareIcon, InternetAntenna01Icon, ListVideoIcon, TaskEdit01Icon, ComputerChartUpIcon, WorkflowSquare01Icon, Activity03Icon, CalendarClockIcon, UserMultiple02Icon, Delete02Icon, FoldersIcon } from "@hugeicons/core-free-icons";
+import mainIcon from "../assets/Glimmora.png"
 
 const MainLayout = () => {
   return (
     <div className='flex min-h-dvh w-full'>
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={
+      document.cookie.split("; ").find((row) => row.startsWith("sidebar_state="))?.split("=")[1] !== "false"
+      }>
         <Sidebar>
           <SidebarContent>
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton render={<a href='#' />}>
-                      <ChartNoAxesCombinedIcon />
-                      <span>Dashboard</span>
+                    <SidebarMenuButton className="mt-2" render={<a href='#' />}>
+                      <img src={mainIcon} className="h-10 object-contain"  />
+                      <span>Glimmora</span>
                     </SidebarMenuButton>
-                    <SidebarMenuBadge className='bg-primary/10 top-1/2! right-2 -translate-y-1/2! rounded-full'>
+                    {/* <SidebarMenuBadge className='bg-primary/10 top-1/2! right-2 -translate-y-1/2! rounded-full'>
                       5
-                    </SidebarMenuBadge>
+                    </SidebarMenuBadge> */}
                   </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarGroupContent>
@@ -60,53 +65,53 @@ const MainLayout = () => {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
-                      <ChartSplineIcon />
-                      <span>Content Performance</span>
+                      <HugeiconsIcon icon={MenuSquareIcon} />
+                      <span>Dashboard</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
-                      <UsersIcon />
-                      <span>Audience Insight</span>
+                      <HugeiconsIcon icon={WorkflowSquare01Icon} />
+                      <span>Content Pipeline</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
-                      <ChartPieIcon />
-                      <span>Engagement Metrics</span>
+                      <HugeiconsIcon icon={InternetAntenna01Icon} />
+                      <span>Channels</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
-                      <HashIcon />
-                      <span>Hashtag Performance</span>
+                      <HugeiconsIcon icon={ListVideoIcon} />
+                      <span>Contents</span>
                     </SidebarMenuButton>
-                    <SidebarMenuBadge className='bg-primary/10 top-1/2! right-2 -translate-y-1/2! rounded-full'>
+                    {/* <SidebarMenuBadge className='bg-primary/10 top-1/2! right-2 -translate-y-1/2! rounded-full'>
                       3
-                    </SidebarMenuBadge>
+                    </SidebarMenuBadge> */}
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
-                      <ArrowRightLeftIcon />
-                      <span>Competitor Analysis</span>
+                      <HugeiconsIcon icon={TaskEdit01Icon} />
+                      <span>Tasks</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
-                      <Clock9Icon />
-                      <span>Campaign Tracking</span>
+                      <HugeiconsIcon icon={ComputerChartUpIcon} />
+                      <span>Performance Analysis</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
-                      <ClipboardListIcon />
-                      <span>Sentiment Tracking</span>
+                      <HugeiconsIcon icon={Activity03Icon} />
+                      <span>Content Tracking</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
-                      <CrownIcon />
-                      <span>Influencer</span>
+                      <HugeiconsIcon icon={CalendarClockIcon} />
+                      <span>Schedule</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
@@ -118,32 +123,20 @@ const MainLayout = () => {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
-                      <SquareActivityIcon />
-                      <span>Real Time Monitoring</span>
+                      <HugeiconsIcon icon={UserMultiple02Icon} />
+                      <span>Team</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
-                      <CalendarClockIcon />
-                      <span>Schedule Post & Calendar</span>
+                      <HugeiconsIcon icon={FoldersIcon} />
+                      <span>Archive</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
-                      <Undo2Icon />
-                      <span>Report & Export</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton render={<a href='#' />}>
-                      <SettingsIcon />
-                      <span>Settings & Integrations</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton render={<a href='#' />}>
-                      <UsersIcon />
-                      <span>User Management</span>
+                      <HugeiconsIcon icon={Delete02Icon} />
+                      <span>Trash</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
@@ -165,10 +158,6 @@ const MainLayout = () => {
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
                       <BreadcrumbLink href='#'>Dashboard</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>Free</BreadcrumbPage>
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb>
@@ -203,7 +192,7 @@ const MainLayout = () => {
               <p className='text-sm text-balance max-sm:text-center'>
                 {`©${new Date().getFullYear()}`}{' '}
                 <a href='#' className='text-primary'>
-                  shadcn/studio
+                  shadcn
                 </a>
                 , Made for better web design
               </p>

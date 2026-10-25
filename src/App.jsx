@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./Pages/Login";
 import RegisterPage from "./Pages/Register";
 import Home from "./Home/Home"
 import MainLayout from "./Pages/MainLayout";
 import OnboardingFeedPage from "./Dialog/OnBoarding";
+import TabsUnderline from "./Pages/UserSetting"
 
 function App() {
   return (
@@ -16,6 +16,7 @@ function App() {
         <Route path="/onboarding" element={<OnboardingFeedPage />}></Route>
         <Route element={<MainLayout />}>
           <Route path="/home" element={<Home />}></Route>
+          <Route path="/usersetting" element={<TabsUnderline />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>
