@@ -5,6 +5,7 @@ import Home from "./Home/Home"
 import MainLayout from "./Pages/MainLayout";
 import OnboardingFeedPage from "./Dialog/OnBoarding";
 import TabsUnderline from "./Pages/UserSetting"
+import Pipeline from "./Pages/Pipeline"
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/home" element={<Home />}></Route>
           <Route path="/usersetting" element={<TabsUnderline />}></Route>
+          <Route path="/pipeline" element={<Pipeline />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage  } from '../../components/ui/avatar'
 import {
   Breadcrumb,
@@ -37,8 +37,9 @@ import { MenuSquareIcon, InternetAntenna01Icon, ListVideoIcon, TaskEdit01Icon, C
 import mainIcon from "../assets/Glimmora.png"
 
 const MainLayout = () => {
+  const navigate = useNavigate();
   return (
-    <div className='flex min-h-dvh w-full'>
+    <div className='flex min-h-screen w-full'>
       <SidebarProvider defaultOpen={
       document.cookie.split("; ").find((row) => row.startsWith("sidebar_state="))?.split("=")[1] !== "false"
       }>
@@ -70,9 +71,12 @@ const MainLayout = () => {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton render={<a href='#' />}>
+                    <SidebarMenuButton
+                      onClick={() => navigate("/pipeline")}
+                      tooltip="Pipeline"
+                    >
                       <HugeiconsIcon icon={WorkflowSquare01Icon} />
-                      <span>Content Pipeline</span>
+                      <span>Pipeline</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
@@ -146,7 +150,7 @@ const MainLayout = () => {
         </Sidebar>
         <div className='flex flex-1 flex-col'>
           <header className='bg-card sticky top-0 z-50 border-b'>
-            <div className='mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-2 sm:px-6'>
+            <div className='mx-auto flex items-center justify-between gap-6 px-4 py-2 sm:px-20'>
               <div className='flex items-center gap-4'>
                 <SidebarTrigger className='[&_svg]:size-5!' />
                 <Separator orientation='vertical' className='hidden h-4! data-vertical:self-center sm:block' />
@@ -186,9 +190,11 @@ const MainLayout = () => {
               </div>
             </div>
           </header>
-          <Outlet />
+          <main className="w-full min-w-0 flex-1">
+      <Outlet />
+    </main>
           <footer>
-            <div className='text-muted-foreground mx-auto flex size-full max-w-7xl items-center justify-between gap-3 px-4 py-3 max-sm:flex-col sm:gap-6 sm:px-6'>
+            <div className='text-muted-foreground mx-auto flex size-full max-w-full items-center justify-between gap-3 px-4 py-8 max-sm:flex-col sm:gap-6 sm:px-64'>
               <p className='text-sm text-balance max-sm:text-center'>
                 {`©${new Date().getFullYear()}`}{' '}
                 <a href='#' className='text-primary'>
