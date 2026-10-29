@@ -6,6 +6,8 @@ import MainLayout from "./Pages/MainLayout";
 import OnboardingFeedPage from "./Dialog/OnBoarding";
 import TabsUnderline from "./Pages/UserSetting"
 import Pipeline from "./Pages/Pipeline"
+import ProductListPage from "./Pages/Channel"
+import ContentPage from "./Pages/Content";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           <Route path="/home" element={<Home />}></Route>
           <Route path="/usersetting" element={<TabsUnderline />}></Route>
           <Route path="/pipeline" element={<Pipeline />}></Route>
+          <Route path="/channel" element={<ProductListPage />}></Route>
+          <Route path="/content" element={<ContentPage />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

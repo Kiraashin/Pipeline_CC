@@ -25,7 +25,7 @@ import {
   CircleDot,
 } from "lucide-react";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowRight02Icon, ArrowLeft02Icon, AiIdeaIcon } from "@hugeicons/core-free-icons";
+import { ArrowRight02Icon, ArrowLeft02Icon } from "@hugeicons/core-free-icons";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 
@@ -501,17 +501,11 @@ export default function Pipeline() {
   }
 
   return (
-    <main className="bg-background p-5 text-foreground md:px-23">
-      <div className="w-full max-w-none space-y-8">
+    <main className="min-h-screen bg-background py-8 sm:py-12 lg:py-16">
+      <div className="mx-auto max-w-screen-2xl space-y-8 px-4 sm:px-6 lg:px-10">
         {/* Header */}
         <header className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
-          <div>
-            <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
-              <span>Workspace</span>
-              <span>/</span>
-              <span className="text-foreground">Pipeline</span>
-            </div>
-
+          <div className="space-y-1.5">
             <div className="flex items-center gap-3">
               <div className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <LayoutGrid className="size-5" />

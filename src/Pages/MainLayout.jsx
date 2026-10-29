@@ -80,13 +80,19 @@ const MainLayout = () => {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton render={<a href='#' />}>
+                    <SidebarMenuButton
+                      onClick={() => navigate("/channel")}
+                      tooltip="Saluran"
+                    >
                       <HugeiconsIcon icon={InternetAntenna01Icon} />
                       <span>Channels</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton render={<a href='#' />}>
+                    <SidebarMenuButton
+                      onClick={() => navigate("/content")}
+                      tooltip="Konten"
+                    >
                       <HugeiconsIcon icon={ListVideoIcon} />
                       <span>Contents</span>
                     </SidebarMenuButton>
@@ -150,7 +156,7 @@ const MainLayout = () => {
         </Sidebar>
         <div className='flex flex-1 flex-col'>
           <header className='bg-card sticky top-0 z-50 border-b'>
-            <div className='mx-auto flex items-center justify-between gap-6 px-4 py-2 sm:px-20'>
+            <div className='mx-auto flex items-center justify-between gap-6 py-3 max-w-screen-2xl px-4 sm:px-6 lg:px-10'>
               <div className='flex items-center gap-4'>
                 <SidebarTrigger className='[&_svg]:size-5!' />
                 <Separator orientation='vertical' className='hidden h-4! data-vertical:self-center sm:block' />
