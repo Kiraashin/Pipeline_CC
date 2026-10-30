@@ -61,7 +61,7 @@ const MainLayout = () => {
               </SidebarGroupContent>
             </SidebarGroup>
             <SidebarGroup>
-              <SidebarGroupLabel>Pages</SidebarGroupLabel>
+              <SidebarGroupLabel>Menu</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
@@ -85,7 +85,7 @@ const MainLayout = () => {
                       tooltip="Saluran"
                     >
                       <HugeiconsIcon icon={InternetAntenna01Icon} />
-                      <span>Channels</span>
+                      <span>Saluran</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
@@ -94,7 +94,7 @@ const MainLayout = () => {
                       tooltip="Konten"
                     >
                       <HugeiconsIcon icon={ListVideoIcon} />
-                      <span>Contents</span>
+                      <span>Konten</span>
                     </SidebarMenuButton>
                     {/* <SidebarMenuBadge className='bg-primary/10 top-1/2! right-2 -translate-y-1/2! rounded-full'>
                       3
@@ -102,51 +102,47 @@ const MainLayout = () => {
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
-                      <HugeiconsIcon icon={TaskEdit01Icon} />
-                      <span>Tasks</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton render={<a href='#' />}>
                       <HugeiconsIcon icon={ComputerChartUpIcon} />
-                      <span>Performance Analysis</span>
+                      <span>Analisis performa</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
                       <HugeiconsIcon icon={Activity03Icon} />
-                      <span>Content Tracking</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton render={<a href='#' />}>
-                      <HugeiconsIcon icon={CalendarClockIcon} />
-                      <span>Schedule</span>
+                      <span>Lacak konten</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
             <SidebarGroup>
-              <SidebarGroupLabel>Supporting Features</SidebarGroupLabel>
+              <SidebarGroupLabel>Fitur yang akan datang</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
                       <HugeiconsIcon icon={UserMultiple02Icon} />
-                      <span>Team</span>
+                      <span>Jadwal</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      onClick={() => navigate("/team")}
+                      tooltip="Team">
+                      <HugeiconsIcon icon={UserMultiple02Icon} />
+                      <span>Tim</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
                       <HugeiconsIcon icon={FoldersIcon} />
-                      <span>Archive</span>
+                      <span>Arsip</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
                       <HugeiconsIcon icon={Delete02Icon} />
-                      <span>Trash</span>
+                      <span>Tempat sampah</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>

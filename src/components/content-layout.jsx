@@ -10,8 +10,6 @@ import {
   Clock3,
   AlertCircle,
   CalendarDays,
-  MessageSquare,
-  Paperclip,
   X,
   ListTodo,
   Trash2,
@@ -54,6 +52,62 @@ import {
 } from "../../components/ui/select";
 
 const initialContents = [
+  {
+    id: "CNT-101",
+    title: "Instagram Reels Campaign",
+    description: "Konten promosi produk untuk Instagram Reels.",
+    tasks: [
+      {
+        id: "TSK-101",
+        title: "Buat konsep konten",
+        status: "Done",
+        priority: "High",
+        dueDate: "Oct 30",
+      },
+      {
+        id: "TSK-102",
+        title: "Edit video promosi",
+        status: "In Progress",
+        priority: "Urgent",
+        dueDate: "Oct 31",
+      },
+      {
+        id: "TSK-103",
+        title: "Tulis caption dan hashtag",
+        status: "Todo",
+        priority: "Medium",
+        dueDate: "Nov 02",
+      },
+    ],
+  },
+  {
+    id: "CNT-102",
+    title: "Instagram Reels Campaign",
+    description: "Konten promosi produk untuk Instagram Reels.",
+    tasks: [
+      {
+        id: "TSK-101",
+        title: "Buat konsep konten",
+        status: "Done",
+        priority: "High",
+        dueDate: "Oct 30",
+      },
+      {
+        id: "TSK-102",
+        title: "Edit video promosi",
+        status: "In Progress",
+        priority: "Urgent",
+        dueDate: "Oct 31",
+      },
+      {
+        id: "TSK-103",
+        title: "Tulis caption dan hashtag",
+        status: "Todo",
+        priority: "Medium",
+        dueDate: "Nov 02",
+      },
+    ],
+  },
   {
     id: "CNT-101",
     title: "Instagram Reels Campaign",
@@ -160,14 +214,16 @@ export default function Channel() {
   const [contents, setContents] = useState(initialContents);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [contentFilter, setContentFilter] = useState("all");
 
   const [selectedContents, setSelectedContents] = useState([]);
-  const [expandedContents, setExpandedContents] = useState(["CNT-101"]);
+  const [expandedContents, setExpandedContents] = useState([0]);
 
   const [openContentDialog, setOpenContentDialog] = useState(false);
   const [openTaskDialog, setOpenTaskDialog] = useState(false);
-  const [activeContentId, setActiveContentId] = useState(null);
+  
+  // Menyimpan indeks spesifik dari item konten yang sedang aktif
+  const [activeContentIndex, setActiveContentIndex] = useState(null);
 
   const [contentForm, setContentForm] = useState(emptyContentForm);
   const [taskForm, setTaskForm] = useState(emptyTaskForm);
@@ -178,6 +234,10 @@ export default function Channel() {
   );
 
   const allTasks = contents.flatMap((content) => content.tasks);
+
+  const contentOptions = useMemo(() => {
+    return [...new Set(contents.map((c) => c.id))];
+  }, [contents]);
 
   const stats = useMemo(
     () => [
@@ -210,6 +270,9 @@ export default function Channel() {
     const keyword = search.trim().toLowerCase();
 
     return contents.filter((content) => {
+      const matchesContent =
+        contentFilter === "all" || content.id === contentFilter;
+
       const matchesSearch =
         !keyword ||
         content.title.toLowerCase().includes(keyword) ||
@@ -220,23 +283,15 @@ export default function Channel() {
         );
 
       const matchingTasks = content.tasks.filter((task) => {
-        const matchesStatus =
-          statusFilter === "all" || task.status === statusFilter;
-
-        const matchesPriority =
-          priorityFilter === "all" || task.priority === priorityFilter;
-
-        return matchesStatus && matchesPriority;
+        return statusFilter === "all" || task.status === statusFilter;
       });
 
-      const matchesFilters =
-        statusFilter === "all" && priorityFilter === "all"
-          ? true
-          : matchingTasks.length > 0;
+      const matchesStatusFilter =
+        statusFilter === "all" ? true : matchingTasks.length > 0;
 
-      return matchesSearch && matchesFilters;
+      return matchesContent && matchesSearch && matchesStatusFilter;
     });
-  }, [contents, search, statusFilter, priorityFilter]);
+  }, [contents, search, statusFilter, contentFilter]);
 
   function getNextId(prefix, items) {
     const maxNumber = Math.max(
@@ -263,16 +318,17 @@ export default function Channel() {
     };
 
     setContents((current) => [newContent, ...current]);
-    setExpandedContents((current) => [newContent.id, ...current]);
+    setExpandedContents([0]);
     setSearch("");
     setStatusFilter("all");
-    setPriorityFilter("all");
+    setContentFilter("all");
     setContentForm(emptyContentForm);
     setOpenContentDialog(false);
   }
 
-  function openCreateTask(contentId) {
-    setActiveContentId(contentId);
+  // Menerima parameter index spesifik dari konten
+  function openCreateTask(contentIndex) {
+    setActiveContentIndex(contentIndex);
     setTaskForm(emptyTaskForm);
     setOpenTaskDialog(true);
   }
@@ -281,13 +337,7 @@ export default function Channel() {
     event.preventDefault();
 
     const title = taskForm.title.trim();
-    if (!title || !activeContentId) return;
-
-    const currentContent = contents.find(
-      (content) => content.id === activeContentId,
-    );
-
-    if (!currentContent) return;
+    if (!title || activeContentIndex === null) return;
 
     const newTask = {
       id: getNextId("TSK", allTasks),
@@ -299,32 +349,27 @@ export default function Channel() {
         : "No date",
     };
 
+    // Menambahkan tugas hanya ke indeks spesifik
     setContents((current) =>
-      current.map((content) =>
-        content.id === activeContentId
+      current.map((content, idx) =>
+        idx === activeContentIndex
           ? { ...content, tasks: [...content.tasks, newTask] }
           : content,
       ),
     );
 
-    setExpandedContents((current) =>
-      current.includes(activeContentId)
-        ? current
-        : [...current, activeContentId],
-    );
-
     setSearch("");
     setStatusFilter("all");
-    setPriorityFilter("all");
+    setContentFilter("all");
     setTaskForm(emptyTaskForm);
     setOpenTaskDialog(false);
-    setActiveContentId(null);
+    setActiveContentIndex(null);
   }
 
-  function updateTask(contentId, taskId, changes) {
+  function updateTask(contentIndex, taskId, changes) {
     setContents((current) =>
-      current.map((content) =>
-        content.id === contentId
+      current.map((content, idx) =>
+        idx === contentIndex
           ? {
               ...content,
               tasks: content.tasks.map((task) =>
@@ -336,10 +381,10 @@ export default function Channel() {
     );
   }
 
-  function deleteTask(contentId, taskId) {
+  function deleteTask(contentIndex, taskId) {
     setContents((current) =>
-      current.map((content) =>
-        content.id === contentId
+      current.map((content, idx) =>
+        idx === contentIndex
           ? {
               ...content,
               tasks: content.tasks.filter((task) => task.id !== taskId),
@@ -349,17 +394,9 @@ export default function Channel() {
     );
   }
 
-  function deleteContent(contentId) {
+  function deleteContent(contentIndex) {
     setContents((current) =>
-      current.filter((content) => content.id !== contentId),
-    );
-
-    setSelectedContents((current) =>
-      current.filter((id) => id !== contentId),
-    );
-
-    setExpandedContents((current) =>
-      current.filter((id) => id !== contentId),
+      current.filter((_, idx) => idx !== contentIndex),
     );
   }
 
@@ -368,10 +405,6 @@ export default function Channel() {
       current.filter(
         (content) => !selectedContents.includes(content.id),
       ),
-    );
-
-    setExpandedContents((current) =>
-      current.filter((id) => !selectedContents.includes(id)),
     );
 
     setSelectedContents([]);
@@ -404,18 +437,18 @@ export default function Channel() {
     });
   }
 
-  function toggleExpanded(contentId) {
+  function toggleExpanded(index) {
     setExpandedContents((current) =>
-      current.includes(contentId)
-        ? current.filter((id) => id !== contentId)
-        : [...current, contentId],
+      current.includes(index)
+        ? current.filter((i) => i !== index)
+        : [...current, index],
     );
   }
 
   function resetFilters() {
     setSearch("");
     setStatusFilter("all");
-    setPriorityFilter("all");
+    setContentFilter("all");
   }
 
   const allFilteredSelected =
@@ -424,14 +457,12 @@ export default function Channel() {
       selectedContents.includes(content.id),
     );
 
-  const activeContent = contents.find(
-    (content) => content.id === activeContentId,
-  );
+  const activeContent =
+    activeContentIndex !== null ? contents[activeContentIndex] : null;
 
   return (
     <main className="min-h-full bg-background">
       <div className="mx-auto max-w-screen-2xl space-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        {/* Header */}
         <section className="flex flex-col justify-between gap-4 pt-8 sm:flex-row sm:items-center">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2.5">
@@ -542,7 +573,6 @@ export default function Channel() {
           </Dialog>
         </section>
 
-        {/* Overview */}
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {stats.map((stat) => {
             const StatIcon = stat.icon;
@@ -569,9 +599,7 @@ export default function Channel() {
           })}
         </section>
 
-        {/* Content list */}
         <section className="overflow-hidden rounded-xl border bg-card">
-          {/* Toolbar */}
           <div className="space-y-4 p-4 sm:p-5">
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
               <div>
@@ -589,17 +617,6 @@ export default function Channel() {
                 >
                   <RotateCcw className="size-3.5" />
                   Reset
-                </Button>
-
-                <Button
-                  className="h-9 gap-2 rounded-lg"
-                  onClick={() => {
-                    setContentForm(emptyContentForm);
-                    setOpenContentDialog(true);
-                  }}
-                >
-                  <Plus className="size-4" />
-                  Tambah konten
                 </Button>
               </div>
             </div>
@@ -631,6 +648,24 @@ export default function Channel() {
 
               <div className="grid grid-cols-2 gap-2 sm:flex">
                 <Select
+                  value={contentFilter}
+                  onValueChange={setContentFilter}
+                >
+                  <SelectTrigger className="h-9 w-full rounded-lg sm:w-44">
+                    <FolderKanban className="mr-1.5 size-3.5 text-muted-foreground" />
+                    <SelectValue placeholder="Pilih ID Konten" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Semua ID</SelectItem>
+                    {contentOptions.map((id) => (
+                      <SelectItem key={id} value={id}>
+                        {id}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select
                   value={statusFilter}
                   onValueChange={setStatusFilter}
                 >
@@ -643,23 +678,6 @@ export default function Channel() {
                     {statusOptions.map((status) => (
                       <SelectItem key={status} value={status}>
                         {statusConfig[status].label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                <Select
-                  value={priorityFilter}
-                  onValueChange={setPriorityFilter}
-                >
-                  <SelectTrigger className="h-9 w-full rounded-lg sm:w-36">
-                    <SelectValue placeholder="Semua prioritas" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Semua prioritas</SelectItem>
-                    {priorityOptions.map((priority) => (
-                      <SelectItem key={priority} value={priority}>
-                        {priority}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -721,8 +739,8 @@ export default function Channel() {
           {/* Content rows */}
           {filteredContents.length > 0 ? (
             <div>
-              {filteredContents.map((content) => {
-                const isExpanded = expandedContents.includes(content.id);
+              {filteredContents.map((content, index) => {
+                const isExpanded = expandedContents.includes(index);
                 const isSelected = selectedContents.includes(content.id);
                 const progress = getContentProgress(content);
                 const contentStatus = getContentStatus(content);
@@ -736,21 +754,17 @@ export default function Channel() {
                   const matchesStatus =
                     statusFilter === "all" || task.status === statusFilter;
 
-                  const matchesPriority =
-                    priorityFilter === "all" ||
-                    task.priority === priorityFilter;
-
-                  return matchesSearch && matchesStatus && matchesPriority;
+                  return matchesSearch && matchesStatus;
                 });
 
                 const visibleTasks =
-                  statusFilter === "all" && priorityFilter === "all"
+                  statusFilter === "all"
                     ? content.tasks
                     : matchingTasks;
 
                 return (
                   <article
-                    key={content.id}
+                    key={`${content.id}-${index}`}
                     className={`border-b last:border-b-0 ${
                       isSelected ? "bg-muted/20" : ""
                     }`}
@@ -772,7 +786,7 @@ export default function Channel() {
                           variant="ghost"
                           size="icon"
                           className="mt-0.5 size-7 shrink-0 rounded-md text-muted-foreground"
-                          onClick={() => toggleExpanded(content.id)}
+                          onClick={() => toggleExpanded(index)}
                           aria-label={
                             isExpanded ? "Tutup daftar tugas" : "Buka daftar tugas"
                           }
@@ -861,14 +875,14 @@ export default function Channel() {
 
                           <DropdownMenuContent align="end" className="w-44">
                             <DropdownMenuItem
-                              onClick={() => openCreateTask(content.id)}
+                              onClick={() => openCreateTask(index)}
                             >
                               <Plus className="mr-2 size-3.5" />
                               Tambah tugas
                             </DropdownMenuItem>
 
                             <DropdownMenuItem
-                              onClick={() => toggleExpanded(content.id)}
+                              onClick={() => toggleExpanded(index)}
                             >
                               {isExpanded ? "Tutup daftar tugas" : "Lihat tugas"}
                             </DropdownMenuItem>
@@ -877,7 +891,7 @@ export default function Channel() {
 
                             <DropdownMenuItem
                               className="text-destructive focus:text-destructive"
-                              onClick={() => deleteContent(content.id)}
+                              onClick={() => deleteContent(index)}
                             >
                               <Trash2 className="mr-2 size-3.5" />
                               Hapus konten
@@ -915,7 +929,7 @@ export default function Channel() {
                             variant="outline"
                             size="sm"
                             className="h-8 w-fit gap-1.5 rounded-lg"
-                            onClick={() => openCreateTask(content.id)}
+                            onClick={() => openCreateTask(index)}
                           >
                             <Plus className="size-3.5" />
                             Tambah tugas
@@ -969,7 +983,7 @@ export default function Channel() {
                                     <Select
                                       value={task.status}
                                       onValueChange={(value) =>
-                                        updateTask(content.id, task.id, {
+                                        updateTask(index, task.id, {
                                           status: value,
                                         })
                                       }
@@ -993,7 +1007,7 @@ export default function Channel() {
                                     <Select
                                       value={task.priority}
                                       onValueChange={(value) =>
-                                        updateTask(content.id, task.id, {
+                                        updateTask(index, task.id, {
                                           priority: value,
                                         })
                                       }
@@ -1031,7 +1045,7 @@ export default function Channel() {
                                       <DropdownMenuContent align="end">
                                         <DropdownMenuItem
                                           onClick={() =>
-                                            deleteTask(content.id, task.id)
+                                            deleteTask(index, task.id)
                                           }
                                           className="text-destructive focus:text-destructive"
                                         >
@@ -1054,7 +1068,7 @@ export default function Channel() {
                               variant="link"
                               size="sm"
                               className="mt-1 h-auto"
-                              onClick={() => openCreateTask(content.id)}
+                              onClick={() => openCreateTask(index)}
                             >
                               Tambahkan tugas
                             </Button>
@@ -1105,7 +1119,6 @@ export default function Channel() {
         </section>
       </div>
 
-      {/* Add task dialog */}
       <Dialog open={openTaskDialog} onOpenChange={setOpenTaskDialog}>
         <DialogContent className="rounded-xl sm:max-w-md">
           <DialogHeader>

@@ -8,6 +8,7 @@ import TabsUnderline from "./Pages/UserSetting"
 import Pipeline from "./Pages/Pipeline"
 import ProductListPage from "./Pages/Channel"
 import ContentPage from "./Pages/Content";
+import WidgetCardPreview from "./Pages/Team"
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/pipeline" element={<Pipeline />}></Route>
           <Route path="/channel" element={<ProductListPage />}></Route>
           <Route path="/content" element={<ContentPage />}></Route>
+          <Route path="/team" element={<WidgetCardPreview />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

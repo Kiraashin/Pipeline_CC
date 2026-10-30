@@ -119,6 +119,40 @@
   --sidebar-ring: oklch(0.542 0.034 322.5);
 }
 
+.maintheme {
+  --background: rgb(9 9 11);
+  --foreground: rgb(250 250 250);
+  --card: rgb(24 24 27);
+  --card-foreground: rgb(250 250 250);
+  --popover: rgb(24 24 27);
+  --popover-foreground: rgb(250 250 250);
+  --primary: rgb(220 38 38);
+  --primary-foreground: rgb(255 255 255);
+  --secondary: rgb(29 78 216);
+  --secondary-foreground: rgb(255 255 255);
+  --muted: rgb(39 39 42);
+  --muted-foreground: rgb(161 161 170);
+  --accent: rgb(69 20 25);
+  --accent-foreground: rgb(254 226 226);
+  --destructive: rgb(220 38 38);
+  --border: rgb(63 63 70);
+  --input: rgb(63 63 70);
+  --ring: rgb(239 68 68);
+  --chart-1: rgb(239 68 68);
+  --chart-2: rgb(59 130 246);
+  --chart-3: rgb(185 28 28);
+  --chart-4: rgb(29 78 216);
+  --chart-5: rgb(248 113 113);
+  --sidebar: rgb(15 15 18);
+  --sidebar-foreground: rgb(250 250 250);
+  --sidebar-primary: rgb(220 38 38);
+  --sidebar-primary-foreground: rgb(255 255 255);
+  --sidebar-accent: rgb(69 20 25);
+  --sidebar-accent-foreground: rgb(254 226 226);
+  --sidebar-border: rgb(63 63 70);
+  --sidebar-ring: rgb(239 68 68);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

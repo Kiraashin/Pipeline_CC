@@ -2,38 +2,68 @@
 
 import { useState } from 'react'
 import { Button } from '../../components/ui/button'
-import { Checkbox } from '../../components/ui/checkbox'
 import { Input } from '../../components/ui/input'
 import { Field, FieldLabel, FieldGroup } from '../../components/ui/field'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '../../components/ui/input-group'
 import { useNavigate } from "react-router-dom";
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ViewOffSlashIcon, ViewIcon } from "@hugeicons/core-free-icons"
+import { toast } from 'sonner'
+import api from '../services/api'
 
 const LoginForm = () => {
   const [isVisible, setIsVisible] = useState(false)
 
   const navigate = useNavigate();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleLogin = async (e) => {
+    e.preventDefault()
+
+    try {
+      setIsLoading(true)
+
+      const response = await api.post('/auth/login', {
+        email,
+        password,
+      })
+
+      const token = response.data.data.token
+      localStorage.setItem('token', token)
+
+      toast.success('Login berhasil!')
+      navigate('/home')
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || 'Email atau password salah'
+      )
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
-    <form onSubmit={e => e.preventDefault()}>
+    <form onSubmit={handleLogin}>
       <FieldGroup className='gap-4'>
-        {/* Email */}
         <Field className='gap-2'>
           <FieldLabel htmlFor='userEmail' className='leading-5'>
-            Email address*
+            Alamat email
           </FieldLabel>
-          <Input type='email' id='userEmail' placeholder='Enter your email address' />
+          <Input type='email' id='userEmail' value={email} onChange={(e) => setEmail(e.target.value)} required placeholder='johndoe@gmail.com' />
         </Field>
-        {/* Password */}
         <Field className='w-full gap-2'>
           <FieldLabel htmlFor='password' className='leading-5'>
-            Password*
+            Kata sandi
           </FieldLabel>
           <InputGroup>
-            <InputGroupInput id='password' type={isVisible ? 'text' : 'password'} placeholder='••••••••••••••••' />
+            <InputGroupInput id='password' type={isVisible ? 'text' : 'password'} value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required placeholder='••••••••••••••••' />
             <InputGroupAddon align='inline-end' className='pr-1.5'>
               <Button
+                type="button"
                 variant='ghost'
                 size='icon'
                 onClick={() => setIsVisible(prevState => !prevState)}
@@ -49,22 +79,9 @@ const LoginForm = () => {
             </InputGroupAddon>
           </InputGroup>
         </Field>
-        {/* Remember Me and Forgot Password */}
-        <div className='flex items-center justify-between gap-y-2'>
-          <Field orientation='horizontal' className='flex items-center gap-2'>
-            <Checkbox id='rememberMe' />
-            <FieldLabel htmlFor='rememberMe' className='text-muted-foreground'>
-              {' '}
-              Remember Me
-            </FieldLabel>
-          </Field>
-          <a href='#' className='text-base text-nowrap hover:underline'>
-            Forgot Password?
-          </a>
-        </div>
         <Field>
-          <Button className='w-full' type='submit' onClick={() => navigate("/onboarding")}>
-            Sign in to Shadcn Studio
+          <Button className='w-full' type="submit" disabled={isLoading}>
+            {isLoading ? 'Memproses...' : 'Masuk ke Glimmora'}
           </Button>
         </Field>
       </FieldGroup>
