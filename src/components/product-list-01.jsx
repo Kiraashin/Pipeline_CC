@@ -26,8 +26,15 @@ const platforms = [
   { value: 'youtube', label: 'YouTube' },
   { value: 'instagram', label: 'Instagram' },
   { value: 'tiktok', label: 'TikTok' },
-  { value: 'x', label: 'X' },
+  { value: 'linkedin', label: 'LinkedIn' },
 ];
+
+const platformImages = {
+  youtube: "https://media-public.canva.com/KE6ns/MAElfQKE6ns/1/s.png",
+  instagram: "https://media-public.canva.com/9h6qU/MAElfZ9h6qU/1/s.png",
+  tiktok: "https://media-public.canva.com/e6HWU/MAHXaNe6HWU/1/s.png",
+  linkedin: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjwQZ9IVBRtSZrkYbD5EUF0OBKWPcTv3Mu8hhMT2sYIA9m4EAhzJrkABA4&s=10",
+};
 
 const ProductList = ({ products = [], onDelete, onAdd }) => {
   const [openProduct, setOpenProduct] = useState(null);
@@ -36,7 +43,7 @@ const ProductList = ({ products = [], onDelete, onAdd }) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const [form, setForm] = useState({
-    handle_name: '',
+    handleName: '',
     platform: 'youtube',
   });
 
@@ -44,18 +51,18 @@ const ProductList = ({ products = [], onDelete, onAdd }) => {
   const handleAdd = async (e) => {
     e.preventDefault();
 
-    if (!form.handle_name.trim() || !form.platform) return;
+    if (!form.handleName.trim() || !form.platform) return;
 
     setIsSubmitting(true);
 
     try {
       await onAdd?.({
-        handle_name: form.handle_name.trim(),
+        handleName: form.handleName.trim(),
         platform: form.platform,
       });
 
       setForm({
-        handle_name: '',
+        handleName: '',
         platform: 'youtube',
       });
 
@@ -83,10 +90,10 @@ const ProductList = ({ products = [], onDelete, onAdd }) => {
 
   return (
     <section className="w-full bg-background py-5 sm:py-7">
-      <div className="mx-auto max-w-screen-2xl space-y-5 px-4 sm:px-6 lg:px-10">
+      <div className="mx-auto space-y-5 px-4 sm:px-6 lg:px-30">
 
         {/* Header */}
-        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row items-center">
           <div className="space-y-1">
             <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
               Saluran
@@ -122,9 +129,9 @@ const ProductList = ({ products = [], onDelete, onAdd }) => {
                   <Input
                     id="channel-handle"
                     placeholder="Contoh: @mrbeast"
-                    value={form.handle_name}
+                    value={form.handleName}
                     onChange={(e) =>
-                      setForm({ ...form, handle_name: e.target.value })
+                      setForm({ ...form, handleName: e.target.value })
                     }
                     className="h-10 rounded-lg"
                     required
@@ -210,13 +217,12 @@ const ProductList = ({ products = [], onDelete, onAdd }) => {
                 key={product.id ?? index}
                 className="group overflow-hidden rounded-xl border bg-card shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
               >
-                {/* Image */}
                 <CardContent>
                   <div className="flex h-28 items-center justify-center overflow-hidden rounded-lg sm:h-32">
-                    {product.image ? (
+                    {platformImages[product.platform?.toLowerCase()] ? (
                       <img
-                        src={product.image}
-                        alt={product.imgAlt ?? product.name}
+                        src={platformImages[product.platform.toLowerCase()]}
+                        alt={product.platform}
                         className="size-full object-contain p-5 transition-transform duration-300 group-hover:scale-105"
                       />
                     ) : (
@@ -230,20 +236,16 @@ const ProductList = ({ products = [], onDelete, onAdd }) => {
                 {/* Information */}
                 <CardContent className="space-y-2.5 p-3">
                   <div className="min-w-0 space-y-1">
-                    <h3 className="truncate text-sm font-semibold tracking-tight">
-                      {product.handle_name}
-                    </h3>
-
-                    <p className="truncate text-xs text-muted-foreground capitalize">
-                      {product.platform}
-                    </p>
+                    <h1 className="truncate text-sm font-bold  tracking-tight">
+                      {product.handleName}
+                    </h1>
                   </div>
 
                   <Separator />
 
                   <div className="flex items-center justify-between gap-2">
                     <span className="truncate text-xs capitalize text-muted-foreground">
-                      {product.type || 'Channel'}
+                      Saluran {product.platform}
                     </span>
 
                     <Dialog

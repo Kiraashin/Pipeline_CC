@@ -152,7 +152,7 @@ const MainLayout = () => {
         </Sidebar>
         <div className='flex flex-1 flex-col'>
           <header className='bg-card sticky top-0 z-50 border-b'>
-            <div className='mx-auto flex items-center justify-between gap-6 py-3 max-w-screen-2xl px-4 sm:px-6 lg:px-10'>
+            <div className='mx-auto flex items-center justify-between gap-6 py-3 max-w-screen-2xl px-4 sm:px-6 lg:px-30'>
               <div className='flex items-center gap-4'>
                 <SidebarTrigger className='[&_svg]:size-5!' />
                 <Separator orientation='vertical' className='hidden h-4! data-vertical:self-center sm:block' />

@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import {
   Search, Plus, SlidersHorizontal, FolderKanban,
@@ -10,6 +9,7 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Badge } from "../../components/ui/badge";
 import { Separator } from "../../components/ui/separator";
+import { getChannelList } from "../services/channelService";
 
 import {
   getContents,
@@ -79,6 +79,24 @@ export default function Content() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(emptyForm);
+  const [channels, setChannels] = useState([]);
+  const [loadingChannels, setLoadingChannels] = useState(false);
+  const [editingStatus, setEditingStatus] = useState("");
+
+  const fetchChannels = async () => {
+    try {
+      setLoadingChannels(true);
+
+      const response = await getChannelList();
+      const data = response.data?.data;
+
+      setChannels(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError(getError(err));
+    } finally {
+      setLoadingChannels(false);
+    }
+  };
 
   // GET CONTENTS
   const fetchContents = async () => {
@@ -98,6 +116,7 @@ export default function Content() {
 
   useEffect(() => {
     fetchContents();
+    fetchChannels();
   }, []);
 
   // SEARCH & FILTER
@@ -124,6 +143,7 @@ export default function Content() {
 
   const handleAdd = () => {
     setEditingId(null);
+    setEditingStatus("");
     setForm({ ...emptyForm });
     setError("");
     setModalOpen(true);
@@ -131,6 +151,7 @@ export default function Content() {
 
   const handleEdit = (item) => {
     setEditingId(item.id);
+    setEditingStatus(item.status);
 
     setForm({
       channelId: String(item.channelId || item.channel?.id || ""),
@@ -142,7 +163,6 @@ export default function Content() {
       scheduledDate: item.scheduledDate?.slice(0, 10) || "",
     });
 
-    setError("");
     setModalOpen(true);
   };
 
@@ -163,10 +183,13 @@ export default function Content() {
       };
 
       if (editingId) {
-        await updateContent(editingId, {
-          ...payload,
-          scriptDraft: form.scriptDraft,
-        });
+        const updatePayload = { ...payload };
+
+        if (editingStatus === "scripting") {
+          updatePayload.scriptDraft = form.scriptDraft;
+        }
+
+        await updateContent(editingId, updatePayload);
       } else {
         await createContent({
           ...payload,
@@ -245,7 +268,7 @@ export default function Content() {
 
   return (
     <main className="min-h-full bg-background">
-      <div className="mx-auto max-w-screen-2xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-screen-2xl space-y-6 px-4 py-6 sm:px-6 lg:px-30">
 
         {/* HEADER */}
         <section className="flex flex-col justify-between gap-4 pt-8 sm:flex-row sm:items-center">
@@ -465,17 +488,27 @@ export default function Content() {
               {/* CHANNEL */}
               <div>
                 <label className="mb-1 block text-xs font-medium">
-                  Channel ID *
+                  Channel *
                 </label>
-                <Input
-                  type="number"
+
+                <select
                   name="channelId"
-                  min="1"
                   value={form.channelId}
                   onChange={handleChange}
-                  placeholder="Masukkan Channel ID"
+                  className="h-10 w-full rounded-md border bg-background px-3 text-sm"
                   required
-                />
+                  disabled={loadingChannels || !!editingId}
+                >
+                  <option value="">
+                    {loadingChannels ? "Memuat channel..." : "Pilih channel"}
+                  </option>
+
+                  {channels.map((channel) => (
+                    <option key={channel.id} value={channel.id}>
+                      {channel.handleName} ({channel.platform})
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* TITLE */}
@@ -508,11 +541,12 @@ export default function Content() {
               </div>
 
               {/* SCRIPT DRAFT */}
-              {editingId && (
+              {editingId && editingStatus === "scripting" && (
                 <div>
                   <label className="mb-1 block text-xs font-medium">
                     Script Draft
                   </label>
+
                   <textarea
                     name="scriptDraft"
                     value={form.scriptDraft}

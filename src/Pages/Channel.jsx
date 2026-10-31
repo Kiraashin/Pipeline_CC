@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 
@@ -18,6 +17,7 @@ const ProductListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+
   const [pagination, setPagination] = useState({
     currentPage: 1,
     nextPage: null,
@@ -25,6 +25,7 @@ const ProductListPage = () => {
     isFirstPage: true,
     isLastPage: true,
   });
+
   const {
     pages,
     showLeftEllipsis,
@@ -35,35 +36,21 @@ const ProductListPage = () => {
     paginationItemsToDisplay: PAGINATION_ITEMS_TO_DISPLAY,
   });
 
-  // GET: mengambil channel berdasarkan halaman
+  // GET CHANNEL
   const fetchChannels = useCallback(async () => {
-
     setIsLoading(true);
 
     try {
       const response = await getChannels(currentPage);
 
-      console.log('Response pagination:', response);
+      console.log('Response channel:', response.data);
 
-      // Mapping sementara, sesuaikan dengan response backend
-      const channelData = response?.data?.data ?? [];
-      const metadata = response?.data?.metadata ?? {};
+      const channelData = response.data?.data ?? [];
+      const metadata = response.data?.metadata ?? {};
 
-      setProducts(channelData);
+      setProducts(Array.isArray(channelData) ? channelData : []);
       setPagination(metadata);
-
-      setProducts(
-        Array.isArray(channelData) ? channelData : []
-      );
-
-      setTotalPages(
-        Number(
-          pagination.last_page ??
-          pagination.totalPages ??
-          pagination.total_pages ??
-          1
-        )
-      );
+      setTotalPages(Number(metadata.pageCount ?? 1));
 
     } catch (error) {
       console.error('Gagal mengambil channel:', error);
@@ -72,18 +59,16 @@ const ProductListPage = () => {
         error?.response?.data?.message ||
         'Gagal mengambil data channel'
       );
-
     } finally {
       setIsLoading(false);
     }
   }, [currentPage]);
 
-  // Jalankan GET saat halaman berubah
   useEffect(() => {
     fetchChannels();
   }, [fetchChannels]);
 
-  // POST: menambahkan channel
+  // POST CHANNEL
   const handleAdd = async (data) => {
     try {
       await createChannel(data);
@@ -95,7 +80,6 @@ const ProductListPage = () => {
       } else {
         await fetchChannels();
       }
-
     } catch (error) {
       console.error('Gagal menambahkan channel:', error);
 
@@ -108,7 +92,7 @@ const ProductListPage = () => {
     }
   };
 
-  // DELETE: menghapus channel
+  // DELETE CHANNEL
   const handleDelete = async (product) => {
     try {
       await deleteChannel(product.id);
@@ -116,11 +100,10 @@ const ProductListPage = () => {
       toast.success('Channel berhasil dihapus');
 
       if (products.length === 1 && currentPage > 1) {
-        setCurrentPage((prev) => prev - 1);
+        setCurrentPage(prev => prev - 1);
       } else {
         await fetchChannels();
       }
-
     } catch (error) {
       console.error('Gagal menghapus channel:', error);
 
@@ -158,7 +141,7 @@ const ProductListPage = () => {
         </button>
 
         <span className="text-sm text-muted-foreground">
-          Halaman {pagination.currentPage}
+          Halaman {pagination.currentPage ?? currentPage}
         </span>
 
         <button
