@@ -9,6 +9,7 @@ import Pipeline from "./Pages/Pipeline"
 import ProductListPage from "./Pages/Channel"
 import ContentPage from "./Pages/Content";
 import WidgetCardPreview from "./Pages/Team"
+import ContentPerformance from "./Pages/Analysis"
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/channel" element={<ProductListPage />}></Route>
           <Route path="/content" element={<ContentPage />}></Route>
           <Route path="/team" element={<WidgetCardPreview />}></Route>
+          <Route path="/analisis-performa" element={<ContentPerformance />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

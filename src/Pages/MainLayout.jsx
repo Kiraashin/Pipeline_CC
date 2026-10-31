@@ -26,6 +26,7 @@ import {
 
 import LanguageDropdown from '../components/dropdown-language'
 import ProfileDropdown from '../components/dropdown-profile'
+import { Tooltip } from "../../components/ui/tooltip";
 
 import FacebookIcon from '@/assets/svg/facebook-icon'
 import InstagramIcon from '@/assets/svg/instagram-icon'
@@ -33,7 +34,7 @@ import LinkedinIcon from '@/assets/svg/linkedin-icon'
 import TwitterIcon from '@/assets/svg/twitter-icon'
 import { LanguagesIcon } from 'lucide-react'
 import { HugeiconsIcon } from '@hugeicons/react';
-import { MenuSquareIcon, InternetAntenna01Icon, ListVideoIcon, TaskEdit01Icon, ComputerChartUpIcon, WorkflowSquare01Icon, Activity03Icon, CalendarClockIcon, UserMultiple02Icon, Delete02Icon, FoldersIcon } from "@hugeicons/core-free-icons";
+import { MenuSquareIcon, InternetAntenna01Icon, ListVideoIcon, ComputerChartUpIcon, WorkflowSquare01Icon, UserMultiple02Icon, Delete02Icon, FoldersIcon } from "@hugeicons/core-free-icons";
 import mainIcon from "../assets/Glimmora.png"
 
 const MainLayout = () => {
@@ -101,15 +102,10 @@ const MainLayout = () => {
                     </SidebarMenuBadge> */}
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton render={<a href='#' />}>
+                    <SidebarMenuButton onClick={() => navigate("/analisis-performa")}
+                      tooltip="Analisis">
                       <HugeiconsIcon icon={ComputerChartUpIcon} />
                       <span>Analisis performa</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton render={<a href='#' />}>
-                      <HugeiconsIcon icon={Activity03Icon} />
-                      <span>Lacak konten</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
