@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage  } from '../../components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -42,7 +42,7 @@ const MainLayout = () => {
   return (
     <div className='flex min-h-screen w-full'>
       <SidebarProvider defaultOpen={
-      document.cookie.split("; ").find((row) => row.startsWith("sidebar_state="))?.split("=")[1] !== "false"
+        document.cookie.split("; ").find((row) => row.startsWith("sidebar_state="))?.split("=")[1] !== "false"
       }>
         <Sidebar>
           <SidebarContent>
@@ -51,7 +51,7 @@ const MainLayout = () => {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton className="mt-2" render={<a href='#' />}>
-                      <img src={mainIcon} className="h-10 object-contain"  />
+                      <img src={mainIcon} className="h-10 object-contain" />
                       <span>Glimmora</span>
                     </SidebarMenuButton>
                     {/* <SidebarMenuBadge className='bg-primary/10 top-1/2! right-2 -translate-y-1/2! rounded-full'>
@@ -66,18 +66,11 @@ const MainLayout = () => {
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton render={<a href='#' />}>
+                    <SidebarMenuButton
+                      onClick={() => navigate("/dashboard")}
+                      tooltip="Dashboard">
                       <HugeiconsIcon icon={MenuSquareIcon} />
                       <span>Dashboard</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      onClick={() => navigate("/pipeline")}
-                      tooltip="Pipeline"
-                    >
-                      <HugeiconsIcon icon={WorkflowSquare01Icon} />
-                      <span>Pipeline</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
@@ -101,19 +94,19 @@ const MainLayout = () => {
                       3
                     </SidebarMenuBadge> */}
                   </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton onClick={() => navigate("/analisis-performa")}
-                      tooltip="Analisis">
-                      <HugeiconsIcon icon={ComputerChartUpIcon} />
-                      <span>Analisis performa</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
             <SidebarGroup>
               <SidebarGroupLabel>Fitur yang akan datang</SidebarGroupLabel>
               <SidebarGroupContent>
+                <SidebarMenuItem>
+                  <SidebarMenuButton onClick={() => navigate("/analisis-performa")}
+                    tooltip="Analisis">
+                    <HugeiconsIcon icon={ComputerChartUpIcon} />
+                    <span>Analisis performa</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton render={<a href='#' />}>
@@ -122,7 +115,7 @@ const MainLayout = () => {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton 
+                    <SidebarMenuButton
                       onClick={() => navigate("/team")}
                       tooltip="Team">
                       <HugeiconsIcon icon={UserMultiple02Icon} />
@@ -189,8 +182,8 @@ const MainLayout = () => {
             </div>
           </header>
           <main className="w-full min-w-0 flex-1">
-      <Outlet />
-    </main>
+            <Outlet />
+          </main>
           <footer>
             <div className='text-muted-foreground mx-auto flex size-full max-w-full items-center justify-between gap-3 px-4 py-8 max-sm:flex-col sm:gap-6 sm:px-64'>
               <p className='text-sm text-balance max-sm:text-center'>

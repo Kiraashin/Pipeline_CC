@@ -18,6 +18,7 @@ import {
   updateContentStatus,
   deleteContent,
 } from "../services/contentService";
+import { createTask, updateTaskStatus } from "../services/taskService";
 
 const STATUSES = [
   "idea",
@@ -55,7 +56,6 @@ const getError = (err) =>
 
 const getContentArray = (response) => {
   const rows = response?.data?.data;
-
   if (!Array.isArray(rows)) return [];
 
   return rows.map((row) => ({
@@ -64,6 +64,7 @@ const getContentArray = (response) => {
     channelId: row.channel?.id,
     channelName: row.channel?.name,
     channelPlatform: row.channel?.platform,
+    checklists: row.checklists || [],
   }));
 };
 
@@ -72,7 +73,10 @@ export default function Content() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-
+  const [openTaskId, setOpenTaskId] = useState(null);
+  const [taskName, setTaskName] = useState("");
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const userId = user?.id;
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
@@ -380,7 +384,7 @@ export default function Content() {
               {filteredContents.map((item) => (
                 <div
                   key={item.id}
-                  className="grid gap-3 px-4 py-4 sm:px-5 lg:grid-cols-[minmax(0,1fr)_150px_100px] lg:items-center"
+                  className="grid gap-3 px-4 py-4 sm:px-5 lg:grid-cols-[minmax(0,1fr)_150px_100px_100px] lg:items-center"
                 >
                   {/* CONTENT INFO */}
                   <div className="min-w-0">
@@ -412,6 +416,14 @@ export default function Content() {
                       )}
                     </div>
                   </div>
+
+                  <button
+                    onClick={() =>
+                      setOpenTaskId(openTaskId === item.id ? null : item.id)
+                    }
+                  >
+                    {openTaskId === item.id ? "Hide Tasks" : "Show Tasks"}
+                  </button>
 
                   {/* STATUS */}
                   <select
@@ -446,6 +458,108 @@ export default function Content() {
                     >
                       <Trash2 className="size-4" />
                     </Button>
+                  </div>
+                  <div>
+                    {openTaskId === item.id && (
+                      <div className="border-t px-5 py-4">
+                        <div className="mb-3 flex gap-2">
+                          <Input
+                            placeholder="Tambah task..."
+                            value={taskName}
+                            onChange={(e) => setTaskName(e.target.value)}
+                          />
+
+                          <Button
+                            onClick={async () => {
+                              if (!taskName.trim()) return;
+
+                              try {
+                                const response = await createTask(item.id, {
+                                  taskName: taskName.trim(),
+                                  userId: Number(userId),
+                                });
+
+                                const newTask = response.data.data;
+
+                                setContents((prev) =>
+                                  prev.map((content) =>
+                                    content.id === item.id
+                                      ? {
+                                        ...content,
+                                        checklists: [
+                                          ...(content.checklists || []),
+                                          newTask,
+                                        ],
+                                      }
+                                      : content
+                                  )
+                                );
+
+                                setTaskName("");
+                              } catch (error) {
+                                console.error("Gagal menambahkan task:", error);
+                              }
+                            }}
+                          >
+                            Tambah
+                          </Button>
+                        </div>
+
+                        {(item.checklists || []).map((task) => (
+                          <div key={task.id} className="flex items-center gap-3 py-2">
+                            <input
+                              type="checkbox"
+                              checked={task.isCompleted}
+                              onChange={async () => {
+                                const previousStatus = task.isCompleted;
+
+                                // Update tampilan langsung
+                                setContents((prev) =>
+                                  prev.map((content) =>
+                                    content.id === item.id
+                                      ? {
+                                        ...content,
+                                        checklists: content.checklists.map((t) =>
+                                          t.id === task.id
+                                            ? { ...t, isCompleted: !previousStatus }
+                                            : t
+                                        ),
+                                      }
+                                      : content
+                                  )
+                                );
+
+                                try {
+                                  await updateTaskStatus(task.id);
+                                } catch (error) {
+                                  // Kembalikan status jika request gagal
+                                  setContents((prev) =>
+                                    prev.map((content) =>
+                                      content.id === item.id
+                                        ? {
+                                          ...content,
+                                          checklists: content.checklists.map((t) =>
+                                            t.id === task.id
+                                              ? { ...t, isCompleted: previousStatus }
+                                              : t
+                                          ),
+                                        }
+                                        : content
+                                    )
+                                  );
+
+                                  console.error("Gagal mengubah checklist:", error);
+                                }
+                              }}
+                            />
+
+                            <span className={task.isCompleted ? "line-through text-muted-foreground" : ""}>
+                              {task.taskName}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

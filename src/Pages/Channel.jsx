@@ -9,8 +9,9 @@ import {
   createChannel,
   deleteChannel,
 } from '../services/channelService';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const PAGINATION_ITEMS_TO_DISPLAY = 3;
+const PAGINATION_ITEMS_TO_DISPLAY = 5;
 
 const ProductListPage = () => {
   const [products, setProducts] = useState([]);
@@ -131,26 +132,53 @@ const ProductListPage = () => {
       )}
 
       {/* Pagination */}
-      <div className="flex items-center justify-center gap-3 pb-5">
+      <div className="flex items-center justify-center gap-2 pb-5">
+
+        {/* PREVIOUS */}
         <button
-          onClick={() => setCurrentPage(pagination.prevPage)}
-          disabled={pagination.isFirstPage || isLoading}
-          className="rounded-lg border px-4 py-2 text-sm transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+          disabled={currentPage === 1 || isLoading}
+          className="flex h-9 items-center gap-1 rounded-lg border px-3 text-sm transition-all hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
         >
-          Previous
+          <ChevronLeft size={16} />
+          <span className="hidden sm:inline">Previous</span>
         </button>
 
-        <span className="text-sm text-muted-foreground">
-          Halaman {pagination.currentPage ?? currentPage}
-        </span>
+        {/* LEFT ELLIPSIS */}
+        {showLeftEllipsis && (
+          <span className="px-1 text-muted-foreground">...</span>
+        )}
 
+        {/* PAGE NUMBERS */}
+        {pages.map((page) => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            disabled={isLoading}
+            className={`h-9 min-w-9 rounded-lg px-3 text-sm font-medium transition-all ${currentPage === page
+                ? 'bg-primary text-primary-foreground shadow-sm'
+                : 'border hover:bg-muted'
+              }`}
+          >
+            {page}
+          </button>
+        ))}
+
+        {/* RIGHT ELLIPSIS */}
+        {showRightEllipsis && (
+          <span className="px-1 text-muted-foreground">...</span>
+        )}
+
+        {/* NEXT */}
         <button
-          onClick={() => setCurrentPage(pagination.nextPage)}
-          disabled={pagination.isLastPage || isLoading}
-          className="rounded-lg border px-4 py-2 text-sm transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+          onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+          disabled={currentPage >= totalPages || isLoading}
+          className="flex h-9 items-center gap-1 rounded-lg border px-3 text-sm transition-all hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
         >
-          Next
+          <span className="hidden sm:inline">Next</span>
+          <ChevronRight size={16} />
         </button>
+
       </div>
     </div>
   );

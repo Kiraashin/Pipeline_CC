@@ -30,8 +30,10 @@ const LoginForm = () => {
         password,
       })
 
-      const token = response.data.data.token
+      const { token, user } = response.data.data
+
       localStorage.setItem('token', token)
+      localStorage.setItem('user', JSON.stringify(user))
 
       toast.success('Login berhasil!')
       navigate('/home')

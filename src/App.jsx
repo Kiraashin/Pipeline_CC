@@ -22,7 +22,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/home" element={<Home />}></Route>
           <Route path="/usersetting" element={<TabsUnderline />}></Route>
-          <Route path="/pipeline" element={<Pipeline />}></Route>
+          <Route path="/dashboard" element={<Pipeline />}></Route>
           <Route path="/channel" element={<ProductListPage />}></Route>
           <Route path="/content" element={<ContentPage />}></Route>
           <Route path="/team" element={<WidgetCardPreview />}></Route>
