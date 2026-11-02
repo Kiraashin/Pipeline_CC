@@ -26,33 +26,50 @@ const RegisterForm = () => {
   const [confirmPassword, setConfirmPassword] = useState('')
 
   const handleRegist = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    if (!name.trim() || !email.trim() || !password || !confirmPassword) {
+      toast.error('Semua kolom wajib diisi');
+      return;
+    }
 
     if (password !== confirmPassword) {
-      toast.error('Konfirmasi kata sandi tidak cocok')
-      return
+      toast.error('Konfirmasi kata sandi tidak cocok');
+      return;
     }
 
     try {
-      setIsLoading(true)
+      setIsLoading(true);
 
-      await api.post('/auth/register', {
-        name,
+      const response = await api.post('/auth/register', {
+        name: name.trim(),
         email: email.trim(),
         password,
-      })
+      });
 
-      toast.success('Registrasi berhasil!')
-      navigate('/login')
+      console.log('REGISTER SUCCESS:', response.data);
+
+      toast.success('Registrasi berhasil!');
+      navigate('/login');
 
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || 'Registrasi gagal'
-      )
+      console.log('FULL RESPONSE:', error.response);
+      console.log('RESPONSE DATA:', JSON.stringify(error.response?.data, null, 2));
+      console.error('REGISTER ERROR:', error);
+      console.log('ERROR RESPONSE:', error.response?.data);
+      console.log('ERROR STATUS:', error.response?.status);
+
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        'Registrasi gagal';
+
+      toast.error(message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleRegist} autoComplete='off'>
@@ -98,6 +115,7 @@ const RegisterForm = () => {
               name="register-secret"
               autoComplete="off"
               value={password}
+              required
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               style={{
@@ -133,6 +151,7 @@ const RegisterForm = () => {
               type="text"
               name="register-confirm-secret"
               autoComplete="off"
+              required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm your password"

@@ -24,7 +24,7 @@ import {
   SidebarTrigger
 } from '../../components/ui/sidebar'
 
-import LanguageDropdown from '../components/dropdown-language'
+import ThemeSwitcher from '../components/dropdown-language'
 import ProfileDropdown from '../components/dropdown-profile'
 import { Tooltip } from "../../components/ui/tooltip";
 
@@ -157,8 +157,8 @@ const MainLayout = () => {
                   </BreadcrumbList>
                 </Breadcrumb>
               </div>
-              <div className='flex items-center gap-1.5'>
-                <LanguageDropdown
+              <div className='flex items-center gap-3'>
+                <ThemeSwitcher
                   trigger={
                     <Button variant='ghost' size='icon-lg'>
                       <LanguagesIcon />

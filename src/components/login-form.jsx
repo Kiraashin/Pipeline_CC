@@ -36,7 +36,7 @@ const LoginForm = () => {
       localStorage.setItem('user', JSON.stringify(user))
 
       toast.success('Login berhasil!')
-      navigate('/home')
+      navigate('/dashboard')
     } catch (error) {
       toast.error(
         error.response?.data?.message || 'Email atau password salah'

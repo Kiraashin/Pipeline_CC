@@ -54,8 +54,10 @@ const getError = (err) =>
   err.message ||
   "Terjadi kesalahan.";
 
+
 const getContentArray = (response) => {
-  const rows = response?.data?.data;
+  const rows = response?.data;
+
   if (!Array.isArray(rows)) return [];
 
   return rows.map((row) => ({
@@ -67,6 +69,7 @@ const getContentArray = (response) => {
     checklists: row.checklists || [],
   }));
 };
+
 
 export default function Content() {
   const [contents, setContents] = useState([]);
