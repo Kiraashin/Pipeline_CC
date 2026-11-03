@@ -11,6 +11,15 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { User02Icon, SettingsIcon, CreditCardIcon, UserMultiple03Icon, PencilEdit02Icon, AddCircleIcon, LogoutIcon } from "@hugeicons/core-free-icons"
 
+<<<<<<< HEAD
+=======
+const token = localStorage.getItem("token");
+
+const currentUser = token
+  ? JSON.parse(atob(token.split(".")[1]))
+  : null;
+
+>>>>>>> development
 const ProfileDropdown = ({
   trigger,
   defaultOpen,
@@ -29,9 +38,20 @@ const ProfileDropdown = ({
               </Avatar>
               <span className='ring-card absolute right-0 bottom-0 block size-2 rounded-full bg-green-600 ring-2' />
             </div>
+<<<<<<< HEAD
             <div className='flex flex-1 flex-col items-start'>
               <span className='text-foreground text-lg font-semibold'>John Doe</span>
               <span className='text-muted-foreground text-base'>john.doe@example.com</span>
+=======
+            <div className="flex flex-1 flex-col items-start">
+              <span className="text-foreground text-lg font-semibold">
+                {currentUser?.name || "User"}
+              </span>
+
+              <span className="text-muted-foreground text-base">
+                {currentUser?.email || ""}
+              </span>
+>>>>>>> development
             </div>
           </DropdownMenuLabel>
         </DropdownMenuGroup>
@@ -39,6 +59,7 @@ const ProfileDropdown = ({
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
+<<<<<<< HEAD
           <DropdownMenuItem className='gap-2 px-4 py-2.5 text-base'>
             <HugeiconsIcon icon={User02Icon} strokeWidth={2} className='text-foreground size-5' />
             <span>My account</span>
@@ -75,6 +96,21 @@ const ProfileDropdown = ({
         <DropdownMenuGroup>
           <DropdownMenuItem variant='destructive' className='gap-2 px-4 py-2.5 text-base'>
             <HugeiconsIcon icon={LogoutIcon} strokeWidth={2} className='size-5' />
+=======
+          <DropdownMenuItem
+            variant="destructive"
+            className="gap-2 px-4 py-2.5 text-base"
+            onClick={() => {
+              localStorage.removeItem("token");
+              window.location.href = "/login";
+            }}
+          >
+            <HugeiconsIcon
+              icon={LogoutIcon}
+              strokeWidth={2}
+              className="size-5"
+            />
+>>>>>>> development
             <span>Logout</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>

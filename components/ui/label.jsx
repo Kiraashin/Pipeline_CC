@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+"use client"
+
+>>>>>>> development
 import * as React from "react"
 import { cn } from "cn"
 
