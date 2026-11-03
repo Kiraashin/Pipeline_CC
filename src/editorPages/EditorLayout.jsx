@@ -58,25 +58,10 @@ const EditorLayout = () => {
 
   const menus = [
     {
-      title: "Dashboard",
-      path: "/editor",
-      icon: MenuSquareIcon,
-    },
-    {
-      title: "Tasks",
-      path: "/editor/tasks",
-      icon: WorkflowSquare01Icon,
-    },
-    {
       title: "Contents",
-      path: "/editor/contents",
+      path: "/editor",
       icon: ListVideoIcon,
-    },
-    {
-      title: "Arsip",
-      path: "/editor/archives",
-      icon: FoldersIcon,
-    },
+    }
   ];
 
   const currentPage =
@@ -143,27 +128,6 @@ const EditorLayout = () => {
             <div className="mx-auto flex items-center justify-between gap-6 py-3 max-w-screen-2xl px-4 sm:px-6 lg:px-30">
               <div className="flex items-center gap-4">
                 <SidebarTrigger className="[&_svg]:size-5!" />
-
-                <Separator
-                  orientation="vertical"
-                  className="hidden h-4! data-vertical:self-center sm:block"
-                />
-
-                <Breadcrumb className="hidden sm:block">
-                  <BreadcrumbList>
-                    <BreadcrumbItem>
-                      <BreadcrumbLink href="/editor">
-                        Home
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-
-                    <BreadcrumbSeparator />
-
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>{currentPage}</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
               </div>
 
               <div className="flex items-center gap-3">

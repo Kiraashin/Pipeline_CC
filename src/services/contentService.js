@@ -14,3 +14,15 @@ export const updateContentStatus = (id, data) =>
 
 export const deleteContent = (id) =>
     api.delete(`/contents/${id}`);
+
+export const getContent = (filters = {}) =>
+    api.get("/contents", {
+        params: {
+            ...(filters.channel_id && {
+                channel_id: filters.channel_id,
+            }),
+            ...(filters.status && {
+                status: filters.status,
+            }),
+        },
+    });

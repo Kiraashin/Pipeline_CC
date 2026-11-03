@@ -10,7 +10,14 @@ import {
     ClipboardList,
 } from "lucide-react";
 import { toast } from "sonner";
-
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "../../components/ui/dialog";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Badge } from "../../components/ui/badge";
@@ -35,18 +42,26 @@ const getError = (err) =>
 
 
 const getContentArray = (response) => {
-    const rows = response?.data;
+    const rows = response?.data?.data ?? response?.data;
 
-    if (!Array.isArray(rows)) return [];
+    if (!Array.isArray(rows)) {
+        console.log("Response bukan array:", response);
+        return [];
+    }
 
-    return rows.map((row) => ({
-        ...row.content,
-        channel: row.channel,
-        channelId: row.channel?.id,
-        channelName: row.channel?.name,
-        channelPlatform: row.channel?.platform,
-        checklists: row.checklists || [],
-    }));
+    return rows.map((row) => {
+        const content = row.content || row;
+        const channel = row.channel || content.channel;
+
+        return {
+            ...content,
+            channel,
+            channelId: channel?.id,
+            channelName: channel?.name || channel?.handleName || "",
+            channelPlatform: channel?.platform || "",
+            checklists: row.checklists || content.checklists || [],
+        };
+    });
 };
 
 
@@ -57,17 +72,33 @@ export default function AdminContent() {
     const [error, setError] = useState("");
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
-
+    const [deleteContentId, setDeleteContentId] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     // GET ALL CONTENTS
     const fetchContents = async () => {
+        setLoading(true);
+        setError("");
+
         try {
-            setLoading(true);
-            setError("");
+            console.log("1. Mulai fetch contents");
 
             const response = await getContents();
-            setContents(getContentArray(response));
+
+            console.log("2. Response berhasil:", response);
+
+            const data = getContentArray(response);
+
+            console.log("3. Hasil normalisasi:", data);
+
+            setContents(data);
         } catch (err) {
+            console.log("URL:", err.config?.baseURL + err.config?.url);
+            console.log("STATUS:", err.response?.status);
+            console.log("RESPONSE:", err.response?.data);
             console.error("Fetch contents error:", err);
+            console.error("Error response:", err.response?.data);
+            console.error("Status:", err.response?.status);
+
             setError(getError(err));
         } finally {
             setLoading(false);
@@ -97,7 +128,6 @@ export default function AdminContent() {
 
     // DELETE CONTENT
     const handleDelete = async (id) => {
-        if (!window.confirm("Yakin ingin menghapus konten ini?")) return;
 
         try {
             setDeletingId(id);
@@ -146,7 +176,7 @@ export default function AdminContent() {
 
     return (
         <main className="min-h-full bg-background">
-            <div className="mx-auto max-w-screen-2xl space-y-6 px-4 py-6 sm:px-6 lg:px-30">
+            <div className="mx-auto max-w-screen-2xl space-y-6 px-4 py-6 sm:px-6 lg:px-32">
 
                 {/* HEADER */}
                 <section className="flex flex-col justify-between gap-3 pt-8 sm:flex-row sm:items-center">
@@ -162,6 +192,54 @@ export default function AdminContent() {
                         </p>
                     </div>
                 </section>
+
+                <Dialog
+                    open={deleteContentId !== null}
+                    onOpenChange={(open) => {
+                        if (!open && !isDeleting) setDeleteContentId(null);
+                    }}
+                >
+                    <DialogContent className="sm:max-w-[400px]">
+                        <DialogHeader>
+                            <div className="mb-2 flex size-11 items-center justify-center rounded-full bg-destructive/10">
+                                <Trash2 className="size-5 text-destructive" />
+                            </div>
+
+                            <DialogTitle>Hapus Konten?</DialogTitle>
+
+                            <DialogDescription>
+                                Apakah kamu yakin ingin menghapus konten ini? Tindakan ini tidak
+                                dapat dibatalkan.
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <DialogFooter className="mt-4">
+                            <Button
+                                variant="outline"
+                                disabled={isDeleting}
+                                onClick={() => setDeleteContentId(null)}
+                            >
+                                Batal
+                            </Button>
+
+                            <Button
+                                variant="destructive"
+                                disabled={isDeleting}
+                                onClick={async () => {
+                                    try {
+                                        setIsDeleting(true);
+                                        await handleDelete(deleteContentId);
+                                        setDeleteContentId(null);
+                                    } finally {
+                                        setIsDeleting(false);
+                                    }
+                                }}
+                            >
+                                {isDeleting ? "Menghapus..." : "Ya, Hapus"}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
 
                 {/* SUMMARY */}
                 <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -286,9 +364,13 @@ export default function AdminContent() {
                                             {item.scheduledDate && (
                                                 <span>
                                                     • Jadwal:{" "}
-                                                    {new Date(
-                                                        `${item.scheduledDate.slice(0, 10)}T00:00:00`
-                                                    ).toLocaleDateString("id-ID")}
+                                                    {item.scheduledDate
+                                                        ? new Date(item.scheduledDate).toLocaleDateString("id-ID", {
+                                                            day: "2-digit",
+                                                            month: "short",
+                                                            year: "numeric",
+                                                        })
+                                                        : "-"}
                                                 </span>
                                             )}
                                         </div>
@@ -326,16 +408,10 @@ export default function AdminContent() {
                                     <Button
                                         variant="outline"
                                         size="icon"
-                                        className="shrink-0 text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                                        disabled={deletingId === item.id}
-                                        onClick={() => handleDelete(item.id)}
-                                        title="Hapus konten"
+                                        className="text-destructive"
+                                        onClick={() => setDeleteContentId(item.id)}
                                     >
-                                        {deletingId === item.id ? (
-                                            <Loader2 className="size-4 animate-spin" />
-                                        ) : (
-                                            <Trash2 className="size-4" />
-                                        )}
+                                        <Trash2 className="size-4" />
                                     </Button>
                                 </div>
                             ))}

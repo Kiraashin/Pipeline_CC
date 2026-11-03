@@ -502,7 +502,7 @@ export default function Pipeline() {
 
   return (
     <main className="min-h-screen bg-background py-8 sm:py-12 lg:py-16">
-      <div className="mx-auto max-w-screen-2xl space-y-8 px-4 sm:px-6 lg:px-10">
+      <div className="mx-auto max-w-screen-2xl space-y-8 px-4 sm:px-6 lg:px-32">
         {/* Header */}
         <header className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
           <div className="space-y-1.5">

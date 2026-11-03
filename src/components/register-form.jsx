@@ -3,7 +3,6 @@
 
 import { useState } from 'react'
 import { Button } from '../../components/ui/button'
-import { Checkbox } from '../../components/ui/checkbox'
 import { Field, FieldGroup, FieldLabel } from '../../components/ui/field'
 import { Input } from '../../components/ui/input'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '../../components/ui/input-group'
@@ -24,75 +23,119 @@ const RegisterForm = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [role, setRole] = useState('creator')
+
+  // Password validation sesuai BE
+  const passwordRules = {
+    minLength: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    number: /[0-9]/.test(password),
+  }
+
+  const isPasswordValid = Object.values(passwordRules).every(Boolean)
+
+  const isConfirmPasswordValid =
+    confirmPassword.length > 0 && password === confirmPassword
 
   const handleRegist = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!name.trim() || !email.trim() || !password || !confirmPassword) {
-      toast.error('Semua kolom wajib diisi');
-      return;
+      toast.error('Semua kolom wajib diisi')
+      return
+    }
+
+    if (name.trim().length < 3 || name.trim().length > 50) {
+      toast.error('Nama harus terdiri dari 3-50 karakter')
+      return
+    }
+
+    if (!isPasswordValid) {
+      toast.error('Password belum memenuhi persyaratan')
+      return
     }
 
     if (password !== confirmPassword) {
-      toast.error('Konfirmasi kata sandi tidak cocok');
-      return;
+      toast.error('Konfirmasi kata sandi tidak cocok')
+      return
     }
 
     try {
-      setIsLoading(true);
+      setIsLoading(true)
 
       const response = await api.post('/auth/register', {
         name: name.trim(),
         email: email.trim(),
         password,
-      });
+        role,
+      })
 
-      console.log('REGISTER SUCCESS:', response.data);
+      console.log('REGISTER SUCCESS:', response.data)
 
-      toast.success('Registrasi berhasil!');
-      navigate('/login');
+      toast.success('Registrasi berhasil!')
+      navigate('/login')
 
     } catch (error) {
-      console.log('FULL RESPONSE:', error.response);
-      console.log('RESPONSE DATA:', JSON.stringify(error.response?.data, null, 2));
-      console.error('REGISTER ERROR:', error);
-      console.log('ERROR RESPONSE:', error.response?.data);
-      console.log('ERROR STATUS:', error.response?.status);
+      console.log('REGISTER ERROR:', error.response?.data)
 
       const message =
         error.response?.data?.message ||
         error.response?.data?.error ||
         error.message ||
-        'Registrasi gagal';
+        'Registrasi gagal'
 
-      toast.error(message);
+      toast.error(message)
+
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
+
+  // Checklist item
+  const PasswordRule = ({ valid, label }) => (
+    <div className={`flex items-center gap-2 text-xs ${
+      valid ? 'text-emerald-600' : 'text-muted-foreground'
+    }`}>
+      <span className='font-bold'>
+        {valid ? '✓' : '○'}
+      </span>
+      <span>{label}</span>
+    </div>
+  )
 
   return (
     <form onSubmit={handleRegist} autoComplete='off'>
       <FieldGroup className='gap-4'>
 
+        {/* Nama */}
         <Field className='gap-2'>
           <FieldLabel htmlFor='username'>
             Nama
           </FieldLabel>
+
           <Input
             type='text'
             id='username'
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
+            maxLength={50}
             placeholder='Masukan nama kamu'
           />
+
+          {name.length > 0 && name.trim().length < 3 && (
+            <p className='text-xs text-destructive'>
+              Nama minimal 3 karakter
+            </p>
+          )}
         </Field>
 
+        {/* Email */}
         <Field className='gap-2'>
           <FieldLabel htmlFor='userEmail'>
             Alamat email
           </FieldLabel>
+
           <Input
             type='email'
             id='userEmail'
@@ -103,6 +146,33 @@ const RegisterForm = () => {
           />
         </Field>
 
+        {/* Role */}
+        <Field className='gap-2'>
+          <FieldLabel>
+            Pilih Role
+          </FieldLabel>
+
+          <div className='grid grid-cols-2 gap-3'>
+            <Button
+              type='button'
+              variant={role === 'editor' ? 'default' : 'outline'}
+              className='h-11'
+              onClick={() => setRole('editor')}
+            >
+              Editor
+            </Button>
+
+            <Button
+              type='button'
+              variant={role === 'creator' ? 'default' : 'outline'}
+              className='h-11'
+              onClick={() => setRole('creator')}
+            >
+              Creator
+            </Button>
+          </div>
+        </Field>
+
         {/* Password */}
         <Field className='w-full gap-2'>
           <FieldLabel htmlFor='password'>
@@ -111,13 +181,14 @@ const RegisterForm = () => {
 
           <InputGroup>
             <InputGroupInput
-              type="text"
-              name="register-secret"
-              autoComplete="off"
+              id='password'
+              type='text'
+              name='register-secret'
+              autoComplete='new-password'
               value={password}
               required
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder='Masukkan kata sandi'
               style={{
                 WebkitTextSecurity: isPasswordVisible ? 'none' : 'disc',
               }}
@@ -138,6 +209,28 @@ const RegisterForm = () => {
               </Button>
             </InputGroupAddon>
           </InputGroup>
+
+          {/* Password Requirements */}
+          <div className='space-y-2 rounded-lg border bg-muted/30 p-3'>
+            <p className='text-xs font-medium text-muted-foreground'>
+              Persyaratan kata sandi:
+            </p>
+
+            <PasswordRule
+              valid={passwordRules.minLength}
+              label='Minimal 8 karakter'
+            />
+
+            <PasswordRule
+              valid={passwordRules.uppercase}
+              label='Minimal 1 huruf kapital (A-Z)'
+            />
+
+            <PasswordRule
+              valid={passwordRules.number}
+              label='Minimal 1 angka (0-9)'
+            />
+          </div>
         </Field>
 
         {/* Confirm Password */}
@@ -148,13 +241,14 @@ const RegisterForm = () => {
 
           <InputGroup>
             <InputGroupInput
-              type="text"
-              name="register-confirm-secret"
-              autoComplete="off"
+              id='confirmPassword'
+              type='text'
+              name='register-confirm-secret'
+              autoComplete='new-password'
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm your password"
+              placeholder='Konfirmasi kata sandi'
               style={{
                 WebkitTextSecurity: isConfirmPasswordVisible ? 'none' : 'disc',
               }}
@@ -175,8 +269,21 @@ const RegisterForm = () => {
               </Button>
             </InputGroupAddon>
           </InputGroup>
+
+          {confirmPassword.length > 0 && (
+            <p className={`text-xs ${
+              isConfirmPasswordValid
+                ? 'text-emerald-600'
+                : 'text-destructive'
+            }`}>
+              {isConfirmPasswordValid
+                ? '✓ Kata sandi cocok'
+                : '✕ Kata sandi tidak cocok'}
+            </p>
+          )}
         </Field>
 
+        {/* Submit */}
         <Field>
           <Button
             className='w-full'

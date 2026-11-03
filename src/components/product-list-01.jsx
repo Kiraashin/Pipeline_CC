@@ -90,7 +90,7 @@ const ProductList = ({ products = [], onDelete, onAdd }) => {
 
   return (
     <section className="w-full bg-background py-5 sm:py-7">
-      <div className="mx-auto space-y-5 px-4 sm:px-6 lg:px-30">
+      <div className="mx-auto space-y-5 px-4 sm:px-6 lg:px-32">
 
         {/* Header */}
         <div className="flex flex-col justify-between gap-3 sm:flex-row items-center">

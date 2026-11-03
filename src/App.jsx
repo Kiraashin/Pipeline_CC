@@ -16,14 +16,18 @@ import ProductListPage from "./creatorPages/Channel";
 import ContentPage from "./creatorPages/Content";
 import WidgetCardPreview from "./creatorPages/Team";
 import ContentPerformance from "./creatorPages/Analysis";
+import DashboardIndexPage from "../komponen tambahan/src/modules/dashboard/pages/DashboardIndexPage";
 
 // ADMIN
 import AdminLayout from "./adminPages/AdminLayout";
 import AdminChannels from "./adminPages/AdminChannel";
 import AdminContent from "./adminPages/AdminContent";
+import AdminUser from "./adminPages/AdminUser";
 
 // EDITOR
 import EditorLayout from "./editorPages/EditorLayout";
+import DashboardIndexPages from "./editorPages/EditorPipeline";
+import ContentDetailPage from "../komponen tambahan/src/modules/content/pages/ContentDetailPage";
 
 function App() {
   return (
@@ -37,18 +41,17 @@ function App() {
 
         {/* ADMIN ROUTES */}
         <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route path="/" element={<AdminLayout />}>
             <Route path="/admin/contents" element={<AdminContent />} />
             <Route path="/admin/channels" element={<AdminChannels />} />
-
+            <Route path="/admin" element={<AdminUser />} />
           </Route>
         </Route>
 
         {/* EDITOR ROUTES */}
         <Route element={<ProtectedRoute allowedRoles={["editor"]} />}>
-          <Route path="/editor" element={<EditorLayout />}>
-
-            {/* <Route index element={<EditorDashboard />} /> */}
+          <Route path="/" element={<EditorLayout />}>
+            <Route path="/editor" element={<DashboardIndexPages />} />
             {/* <Route path="tasks" element={<EditorTasks />} /> */}
             {/* <Route path="contents" element={<EditorContents />} /> */}
             {/* <Route path="archives" element={<EditorArchives />} /> */}
@@ -59,12 +62,13 @@ function App() {
         {/* CREATOR ROUTES */}
         <Route element={<ProtectedRoute allowedRoles={["creator"]} />}>
           <Route element={<MainLayout />}>
-            <Route path="/dashboard" element={<Pipeline />} />
+            <Route path="/dashboard" element={<DashboardIndexPage />} />
             <Route path="/usersetting" element={<TabsUnderline />} />
-            <Route path="/channel" element={<ProductListPage />} />
+            <Route path="/channel" element={<ProductListPage />} /> 
             <Route path="/content" element={<ContentPage />} />
-            <Route path="/team" element={<WidgetCardPreview />} />
-            <Route path="/analisis-performa" element={<ContentPerformance />} />
+            <Route path="/content/:id" element={<ContentDetailPage />} />
+            {/* <Route path="/team" element={<WidgetCardPreview />} />
+            <Route path="/analisis-performa" element={<ContentPerformance />} /> */}
           </Route>
 
           <Route path="/onboarding" element={<OnboardingFeedPage />} />
