@@ -33,13 +33,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-<<<<<<< HEAD
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />}></Route>
-        <Route path="/register" element={<Register />}></Route>
-        <Route path="/dashboard" element={<DashboardShell />}></Route>
-=======
 
         {/* PUBLIC ROUTES */}
         <Route path="/" element={<Navigate to="/login" replace />} />
@@ -84,14 +77,9 @@ function App() {
         {/* FALLBACK */}
         <Route path="*" element={<Navigate to="/login" replace />} />
 
->>>>>>> development
       </Routes>
     </BrowserRouter>
   );
 }
 
-<<<<<<< HEAD
 export default App;
-=======
-export default App;
->>>>>>> development
